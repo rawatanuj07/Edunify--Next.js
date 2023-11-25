@@ -2,10 +2,17 @@
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import '@/app/globals.css';
-import { RefObject } from 'react';
+import { RefObject , useState } from 'react';
 
 const SchoolForm = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const [image, setImage] = useState(null);
+
+
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+    setImage(selectedImage);
+  };
 
   function woosalSubmit(data: any) {
     // handle submitting the form
@@ -193,12 +200,12 @@ const SchoolForm = () => {
             type="file"
             id="image"
             accept="image/*" // Specify accepted file types (images in this case)
+            onChange={handleImageChange}
             className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
               errors.image
                 ? "text-red-300 border-red-400"
                 : "text-purple-200 border-purple-400"
             }`}
-            {...register('image')}
           />
           {errors.image && (
             <p className="text-red-500 text-sm mt-2">
