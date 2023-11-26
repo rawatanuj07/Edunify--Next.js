@@ -9,15 +9,61 @@ const SchoolForm = () => {
   const [image, setImage] = useState(null);
 
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: any) => {
     const selectedImage = e.target.files[0];
     setImage(selectedImage);
   };
+  const formData = new FormData();
 
-  function woosalSubmit(data: any) {
-    // handle submitting the form
-    console.log(data);
-    reset();
+  async function woosalSubmit(data: any) {
+    try {
+      // Create a FormData object to send the image
+      if (image!==null) {
+        formData.append('image', image);
+        console.log('Image is not null');
+        console.log("formdata is", formData.get('image'));
+        console.log("formdata is", typeof(formData));
+
+      } else {
+        // Handle the case where image is null
+        console.error('Image is null');
+      }  
+      // Send the image to the server using fetch
+      const response = await fetch( 'api/img' , {
+        method: 'POST',
+        body: formData,
+      });
+      console.log('sent response');
+      // Check if the request was successful
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+  
+      // Assuming the server responds with the image URL
+      const responseData = await response.json();
+      const imageUrl = responseData.imageUrl;
+  
+      // Now you can save the imageUrl along with other form data to the database
+      console.log('Form tha Data:', { ...data, imageUrl });
+      const ddata = { ...data, imageUrl };
+      console.log('Form finalee Data:', ddata);
+
+      const sl = await fetch('api/crud', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ddata),
+      });
+      if (!sl.ok) {
+        throw new Error('Failed to upload image');
+      }
+  
+      // Reset the form
+      reset();
+    } catch (error) {
+      console.error('Error uploading image:', (error as Error).message);
+    }
   }
   
   return (
@@ -199,6 +245,7 @@ const SchoolForm = () => {
           <input
             type="file"
             id="image"
+            name="image"
             accept="image/*" // Specify accepted file types (images in this case)
             onChange={handleImageChange}
             className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${

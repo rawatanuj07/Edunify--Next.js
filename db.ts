@@ -3,18 +3,32 @@ import mysql from "mysql2/promise";
 
 // Function to create and return a MySQL connection pool
 export async function createDatabasePool() {
-  const pool = mysql.createPool({
+  const ipool = mysql.createPool({
     host: "localhost",
     port: 8889,
     user: "root",
     password: "root",
+    // database: "student", // Specify the database name here
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
   });
 
-  await pool.execute("CREATE DATABASE IF NOT EXISTS new_database");
-  await pool.execute("USE edunify");
+  await ipool.execute("CREATE DATABASE IF NOT EXISTS edunify");
+  // await pool.execute("USE edunify");
+  await ipool.end();
+
+  // Create a new connection specifying the new database
+  const pool = mysql.createPool({
+    host: "localhost",
+    port: 8889,
+    user: "root",
+    password: "root",
+    database: "edunify",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+  });
 
   await pool.execute(`
     CREATE TABLE IF NOT EXISTS schools (

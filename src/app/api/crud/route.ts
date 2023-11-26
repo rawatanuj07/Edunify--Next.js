@@ -1,26 +1,26 @@
 // pages/api/schools.ts
-import { NextApiRequest, NextApiResponse } from "next";
-import { createDatabasePool } from "@/db";
-const pool = await createDatabasePool();
+import { NextRequest, NextResponse } from "next/server";
+import { createDatabasePool } from "@/../db";
+import { OkPacket } from "mysql2";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
-    const { name, address, city, state, contact, image, email_id } = req.body;
+export async function POST(req: NextRequest, res: NextResponse) {
+  console.log("c1");
+  const pool = await createDatabasePool();
+  const data = await req.json();
+  console.log("the data is ", data);
+  const { id, name, address, city, state, contact, email, imageUrl } = data;
+  console.log({ id, name, address, city, state, contact, email, imageUrl });
+  try {
+    const [result] = (await pool.execute(
+      `INSERT INTO schools (id, name, address, city, state, contact, image, email_id) VALUES (?, ?, ?, ?, ?, ?, ?,?)`,
+      [id, name, address, city, state, contact, imageUrl, email]
+    )) as OkPacket[];
 
-    try {
-      const [result] = await pool.execute(
-        `INSERT INTO schools (name, address, city, state, contact, image, email_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [name, address, city, state, contact, image, email_id]
-      );
-
-      res.status(200).json({ id: result.insertId });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  } else {
-    res.status(405).json({ error: "Method not allowed" });
+    return NextResponse.json({ id: result.insertId }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json(
+      { error: (err as Error).message },
+      { status: 500 }
+    );
   }
 }
