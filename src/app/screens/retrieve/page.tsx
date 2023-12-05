@@ -8,20 +8,20 @@ type CardProps = {
   name: string;
   address: any;
   city: string;
-  imagePath: any;
+  image: any;
 };
 const SchoolCard = ({
- id, name, address, city,  imagePath,
+ id, name, address, city,  image,
 
 }: PropsWithChildren<CardProps>) =>{
   // const { id, name, address, city, imagePath } = school;
-  console.log("Schools IMGare:", imagePath);
+  console.log("Schools IMGare:", image);
 
   return (
     <Link className="h-80 w-60 rounded shadow-lg mx-auto border border-gray-300 overflow-hidden" href={`/schools/${name}`} passHref>
       <div className="h-40 relative">
         <Image
-          src={imagePath}
+          src={image}
           // alt={`Image of ${name}`}
           alt="IMAGE"
           layout="fill"
@@ -39,7 +39,7 @@ interface Schoolss {
   name: string;
   address: string;
   city: string;
-  imagePath: any;
+  image: any;
   
   // other properties...
 }
