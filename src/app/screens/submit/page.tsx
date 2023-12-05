@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import '@/app/globals.css';
 import { RefObject , useState } from 'react';
+import Link from 'next/link';
 
 const SchoolForm = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -73,6 +74,7 @@ const SchoolForm = () => {
     <form onSubmit={handleSubmit(woosalSubmit)}>
 
     <div className="mb-8">
+      <Link href="screens/retrieve">retrieve</Link>
 
         {/* id */}
         <label

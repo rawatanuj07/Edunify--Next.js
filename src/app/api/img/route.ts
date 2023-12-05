@@ -20,11 +20,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
     console.log("JUST1");
-    const uploadDirectory = path.resolve("./uploads");
+    const uploadDirectory = path.resolve("./public/uploads");
     console.log("JUST2");
 
     await fs.mkdir(uploadDirectory, { recursive: true });
     console.log("JUST3");
+    ``;
 
     const destinationPath = path.join(uploadDirectory, file.name);
     console.log("JUST4");
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     await fs.writeFile(destinationPath, Buffer.from(await file.arrayBuffer()));
     console.log("JUST5");
 
-    const imageUrl = `/uploads/${file.name}`;
+    const imageUrl = `/public/uploads/${file.name}`;
     console.log("JUST6");
 
     return NextResponse.json({ imageUrl }, { status: 200 });
