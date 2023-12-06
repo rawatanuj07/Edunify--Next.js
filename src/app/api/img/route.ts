@@ -1,6 +1,7 @@
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
+
 // Set up multer to handle file uploads
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -8,7 +9,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     // Use multer to process the file upload
     const data = await req.formData();
     console.log("req D is", data);
-    const file = data.get("image");
+    const file = data.get("image") as File;
     console.log("req P is", file);
 
     // Check if req.file is defined
