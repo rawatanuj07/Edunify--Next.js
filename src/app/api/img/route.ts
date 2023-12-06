@@ -33,7 +33,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     await fs.writeFile(destinationPath, Buffer.from(await file.arrayBuffer()));
     console.log("JUST5");
 
-    const imageUrl = `/public/uploads/${file.name}`;
+    const imageUrl = `/uploads/${file.name}`;
     console.log("JUST6");
 
     return NextResponse.json({ imageUrl }, { status: 200 });

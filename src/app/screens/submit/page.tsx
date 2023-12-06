@@ -1,14 +1,18 @@
 // SchoolForm.js
-import { useForm } from 'react-hook-form';
-import axios from 'axios';
-import '@/app/globals.css';
-import { RefObject , useState } from 'react';
-import Link from 'next/link';
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import "@/app/globals.css";
+import { RefObject, useState } from "react";
+import Link from "next/link";
 
 const SchoolForm = () => {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
   const [image, setImage] = useState(null);
-
 
   const handleImageChange = (e: any) => {
     const selectedImage = e.target.files[0];
@@ -19,222 +23,227 @@ const SchoolForm = () => {
   async function woosalSubmit(data: any) {
     try {
       // Create a FormData object to send the image
-      if (image!==null) {
-        formData.append('image', image);
-        console.log('Image is not null');
-        console.log("formdata is", formData.get('image'));
-        console.log("formdata is", typeof(formData));
-
+      if (image !== null) {
+        formData.append("image", image);
+        console.log("Image is not null");
+        console.log("formdata is", formData.get("image"));
+        console.log("formdata is", typeof formData);
       } else {
         // Handle the case where image is null
-        console.error('Image is null');
-      }  
+        console.error("Image is null");
+      }
       // Send the image to the server using fetch
-      const response = await fetch( 'api/img' , {
-        method: 'POST',
+      const response = await fetch("api/img", {
+        method: "POST",
         body: formData,
       });
-      console.log('sent response');
+      console.log("sent response");
       // Check if the request was successful
       if (!response.ok) {
-        throw new Error('Failed to upload image');
+        throw new Error("Failed to upload image");
       }
-  
+
       // Assuming the server responds with the image URL
       const responseData = await response.json();
       const imageUrl = responseData.imageUrl;
-  
-      // Now you can save the imageUrl along with other form data to the database
-      console.log('Form tha Data:', { ...data, imageUrl });
-      const ddata = { ...data, imageUrl };
-      console.log('Form finalee Data:', ddata);
 
-      const sl = await fetch('api/crud', {
-        method: 'POST',
+      // Now you can save the imageUrl along with other form data to the database
+      console.log("Form tha Data:", { ...data, imageUrl });
+      const ddata = { ...data, imageUrl };
+      console.log("Form finalee Data:", ddata);
+
+      const sl = await fetch("api/crud", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(ddata),
       });
       if (!sl.ok) {
-        throw new Error('Failed to upload image');
+        throw new Error("Failed to upload image");
       }
-  
+
       // Reset the form
       reset();
     } catch (error) {
-      console.error('Error uploading image:', (error as Error).message);
+      console.error("Error uploading image:", (error as Error).message);
     }
   }
-  
+
   return (
-   
+    <div style={{ border: '1px solid white', padding: '10px'}}>
+           <Link href="screens/retrieve" className="flex justify-center mb-8">
+            {" "}
+            <button
+              className=" inline-block px-6 py-2 text-xs font-medium leading-6 text-center text-black uppercase transition bg-orange-500 rounded shadow ripple hover:shadow-lg hover:bg-green focus:outline-none"
+            >
+              Click to View All Schools
+            </button>
+          </Link>
+      <form onSubmit={handleSubmit(woosalSubmit)} className="md:w-1/2 mx-auto" >
+        <div className="mb-8 mt-6" >
+          
 
-    <div>
-    <form onSubmit={handleSubmit(woosalSubmit)}>
+          {/* id */}
+          <label
+            htmlFor="id"
+            className={`block font-bold text-sm mb-2 ${
+              errors.id ? "text-red-400" : "text-purple-400"
+            }`}
+          >
+            id
+          </label>
+          <input
+            type="text"
+            id="id"
+            placeholder="enter your id"
+            className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
+              errors.id
+                ? "text-red-300 border-red-400"
+                : "text-purple-200 border-purple-400"
+            }`}
+            {...register("id")}
+          />
+          {errors.id && (
+            <p className="text-red-500 text-sm mt-2">A valid id is required.</p>
+          )}
+        </div>
 
-    <div className="mb-8">
-      <Link href="screens/retrieve">retrieve</Link>
+        <div className="mb-8">
+          <label
+            htmlFor="name"
+            className={`block font-bold text-sm mb-2 ${
+              errors.name ? "text-red-400" : "text-purple-400"
+            }`}
+          >
+            name
+          </label>
+          <input
+            type="text"
+            id="name"
+            placeholder="enter your name"
+            className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
+              errors.name
+                ? "text-red-300 border-red-400"
+                : "text-purple-200 border-purple-400"
+            }`}
+            {...register("name")}
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-2">
+              A valid name is required.
+            </p>
+          )}
+        </div>
 
-        {/* id */}
-        <label
-          htmlFor="id"
-          className={`block font-bold text-sm mb-2 ${
-            errors.id ? "text-red-400" : "text-purple-400"
-          }`}
-        >
-          id
-        </label>
-        <input
-          type="text"
-          id="id"
-          placeholder="enter your id"
-          className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
-            errors.id
-              ? "text-red-300 border-red-400"
-              : "text-purple-200 border-purple-400"
-          }`}
-          {...register('id')}        />
-        {errors.id && (
-          <p className="text-red-500 text-sm mt-2">
-            A valid id is required.
-          </p>
-        )}
-      </div>
+        <div className="mb-8">
+          <label
+            htmlFor="address"
+            className={`block font-bold text-sm mb-2 ${
+              errors.address ? "text-red-400" : "text-purple-400"
+            }`}
+          >
+            address
+          </label>
+          <input
+            type="text"
+            id="address"
+            placeholder="enter adsress"
+            className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
+              errors.address
+                ? "text-red-300 border-red-400"
+                : "text-purple-200 border-purple-400"
+            }`}
+            {...register("address")}
+          />
+          {errors.address && (
+            <p className="text-red-500 text-sm mt-2">
+              A valid address is required.
+            </p>
+          )}
+        </div>
+        <div className="mb-8">
+          <label
+            htmlFor="city"
+            className={`block font-bold text-sm mb-2 ${
+              errors.city ? "text-red-400" : "text-purple-400"
+            }`}
+          >
+            city
+          </label>
+          <input
+            type="text"
+            id="city"
+            placeholder="enter city"
+            className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
+              errors.city
+                ? "text-red-300 border-red-400"
+                : "text-purple-200 border-purple-400"
+            }`}
+            {...register("city")}
+          />
+          {errors.city && (
+            <p className="text-red-500 text-sm mt-2">
+              A valid city is required.
+            </p>
+          )}
+        </div>
 
-      <div className="mb-8">
-        <label
-          htmlFor="name"
-          className={`block font-bold text-sm mb-2 ${
-            errors.name ? "text-red-400" : "text-purple-400"
-          }`}
-        >
-          name
-        </label>
-        <input
-          type="text"
-          id="name"
-          placeholder="enter your name"
-          className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
-            errors.name
-              ? "text-red-300 border-red-400"
-              : "text-purple-200 border-purple-400"
-          }`}
-          {...register('name')}          />
-        {errors.name && (
-          <p className="text-red-500 text-sm mt-2">
-            A valid name is required.
-          </p>
-        )}
-      </div>
+        <div className="mb-8">
+          <label
+            htmlFor="state"
+            className={`block font-bold text-sm mb-2 ${
+              errors.state ? "text-red-400" : "text-purple-400"
+            }`}
+          >
+            State
+          </label>
+          <input
+            type="text"
+            id="state"
+            placeholder="enter state"
+            className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
+              errors.state
+                ? "text-red-300 border-red-400"
+                : "text-purple-200 border-purple-400"
+            }`}
+            {...register("state")}
+          />
+          {errors.state && (
+            <p className="text-red-500 text-sm mt-2">
+              A valid state is required.
+            </p>
+          )}
+        </div>
 
-      <div className="mb-8">
-        <label
-          htmlFor="address"
-          className={`block font-bold text-sm mb-2 ${
-            errors.address ? "text-red-400" : "text-purple-400"
-          }`}
-        >
-          address
-        </label>
-        <input
-          type="text"
-          id="address"
-          placeholder="enter adsress"
-          className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
-            errors.address
-              ? "text-red-300 border-red-400"
-              : "text-purple-200 border-purple-400"
-          }`}
-          {...register('address')}     />
-        {errors.address && (
-          <p className="text-red-500 text-sm mt-2">
-            A valid address is required.
-          </p>
-        )}
-      </div>
-      <div className="mb-8">
-        <label
-          htmlFor="city"
-          className={`block font-bold text-sm mb-2 ${
-            errors.city ? "text-red-400" : "text-purple-400"
-          }`}
-        >
-          city
-        </label>
-        <input
-          type="text"
-          id="city"
-          placeholder="enter city"
-          className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
-            errors.city
-              ? "text-red-300 border-red-400"
-              : "text-purple-200 border-purple-400"
-          }`}
-          {...register('city')}        />
-        {errors.city && (
-          <p className="text-red-500 text-sm mt-2">
-            A valid city is required.
-          </p>
-        )}
-      </div>
+        <div className="mb-8">
+          <label
+            htmlFor="contact"
+            className={`block font-bold text-sm mb-2 ${
+              errors.contact ? "text-red-400" : "text-purple-400"
+            }`}
+          >
+            contact
+          </label>
+          <input
+            type="number"
+            id="contact"
+            placeholder="enter contact"
+            className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
+              errors.contact
+                ? "text-red-300 border-red-400"
+                : "text-purple-200 border-purple-400"
+            }`}
+            {...register("contact")}
+          />
+          {errors.contact && (
+            <p className="text-red-500 text-sm mt-2">
+              A valid contact is required.
+            </p>
+          )}
+        </div>
 
-      <div className="mb-8">
-        <label
-          htmlFor="state"
-          className={`block font-bold text-sm mb-2 ${
-            errors.state ? "text-red-400" : "text-purple-400"
-          }`}
-        >
-          State
-        </label>
-        <input
-          type="text"
-          id="state"
-          placeholder="enter state"
-          className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
-            errors.state
-              ? "text-red-300 border-red-400"
-              : "text-purple-200 border-purple-400"
-          }`}
-          {...register('state')}        />
-        {errors.state && (
-          <p className="text-red-500 text-sm mt-2">
-            A valid state is required.
-          </p>
-        )}
-      </div>
-
-
-      <div className="mb-8">
-        <label
-          htmlFor="contact"
-          className={`block font-bold text-sm mb-2 ${
-            errors.contact ? "text-red-400" : "text-purple-400"
-          }`}
-        >
-          contact
-        </label>
-        <input
-          type="number"
-          id="contact"
-          placeholder="enter contact"
-          className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
-            errors.contact
-              ? "text-red-300 border-red-400"
-              : "text-purple-200 border-purple-400"
-          }`}
-          {...register('contact')}        />
-        {errors.contact && (
-          <p className="text-red-500 text-sm mt-2">
-            A valid contact is required.
-          </p>
-        )}
-      </div>
-      
-
-
-           {/* Image upload field */}
+        {/* Image upload field */}
         <div className="mb-8">
           <label
             htmlFor="image"
@@ -263,44 +272,38 @@ const SchoolForm = () => {
           )}
         </div>
 
+        <div className="mb-8">
+          <label
+            htmlFor="email"
+            className={`block font-bold text-sm mb-2 ${
+              errors.email ? "text-red-400" : "text-purple-400"
+            }`}
+          >
+            Email
+          </label>
+          <input
+            type="text"
+            id="email"
+            placeholder="hey@chrisoncode.io"
+            className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
+              errors.email
+                ? "text-red-300 border-red-400"
+                : "text-purple-200 border-purple-400"
+            }`}
+            {...register("email")}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-2">
+              A valid email is required.
+            </p>
+          )}
+        </div>
 
-
-
-      <div className="mb-8">
-        <label
-          htmlFor="email"
-          className={`block font-bold text-sm mb-2 ${
-            errors.email ? "text-red-400" : "text-purple-400"
-          }`}
-        >
-          Email
-        </label>
-        <input
-          type="text"
-          id="email"
-          placeholder="hey@chrisoncode.io"
-          className={`block w-full bg-transparent outline-none border-b-2 py-2 px-4  placeholder-purple-500 focus:bg-purple-600 ${
-            errors.email
-              ? "text-red-300 border-red-400"
-              : "text-purple-200 border-purple-400"
-          }`}
-          {...register('email')}        />
-        {errors.email && (
-          <p className="text-red-500 text-sm mt-2">
-            A valid email is required.
-          </p>
-        )}
-      </div>
-
-      
-
-      <button className="inline-block bg-yellow-500 text-yellow-800 rounded shadow py-2 px-5 text-sm">
-        Submit
-      </button>
-    </form>
-  </div>
-    
-     
+        <button className="inline-block bg-yellow-500 text-yellow-800 rounded shadow py-2 px-5 text-sm">
+          Submit
+        </button>
+      </form>
+    </div>
   );
 };
 

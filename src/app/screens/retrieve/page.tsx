@@ -27,11 +27,15 @@ const SchoolCard = ({
             <div className="absolute inset-0">
               <Image
                 src={image}
-                alt={`Image of ${name}`}
+                alt={`Image of ${image}`}
                                 // objectFit="cover"
                 // className="object-scale-down"
                 width={350}
                 height={300}
+                // src={image.replace('/public', '')}
+                // alt={`Image of ${image}`}
+                // width={350}
+                // height={300}
               />
                   {/* <div className="absolute inset-0 rounded-lg overflow-hidden" style={{ zIndex: 1 }}></div> */}
 
