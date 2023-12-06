@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import "@/app/globals.css";
-import { RefObject, useState } from "react";
+import React, { RefObject, useState } from "react";
 import Link from "next/link";
 
 const SchoolForm = () => {
@@ -102,10 +102,17 @@ const SchoolForm = () => {
                 ? "text-red-300 border-red-400"
                 : "text-purple-200 border-purple-400"
             }`}
-            {...register("id")}
-          />
+            {...register("id", { 
+              required: "ID is required",
+              pattern: {
+                value: /^[0-9]+$/i,
+                message: "ID must only contain numbers"
+              }
+            })}
+                      />
           {errors.id && (
-            <p className="text-red-500 text-sm mt-2">A valid id is required.</p>
+            <p className="text-red-500 text-sm mt-2">    {errors.id?.message as React.ReactNode}
+            .</p>
           )}
         </div>
 
@@ -127,11 +134,17 @@ const SchoolForm = () => {
                 ? "text-red-300 border-red-400"
                 : "text-purple-200 border-purple-400"
             }`}
-            {...register("name")}
+            {...register("name", { 
+              required: "Name is required",
+              pattern: {
+                value: /^[A-Za-z]+$/i,
+                message: "Name must only contain letters"
+              }
+            })}
           />
           {errors.name && (
             <p className="text-red-500 text-sm mt-2">
-              A valid name is required.
+             {errors.name?.message as React.ReactNode}
             </p>
           )}
         </div>
@@ -207,14 +220,19 @@ const SchoolForm = () => {
                 ? "text-red-300 border-red-400"
                 : "text-purple-200 border-purple-400"
             }`}
-            {...register("state")}
-          />
-          {errors.state && (
+            {...register("state", { 
+              required: "State is required",
+              pattern: {
+                value: /^[A-Za-z]+$/i,
+                message: "State must only contain letters"
+              }
+            })}            />
+          {errors.state?.message && (
             <p className="text-red-500 text-sm mt-2">
-              A valid state is required.
+              {errors.state?.message as React.ReactNode}
             </p>
           )}
-        </div>
+      </div>
 
         <div className="mb-8">
           <label
@@ -234,11 +252,17 @@ const SchoolForm = () => {
                 ? "text-red-300 border-red-400"
                 : "text-purple-200 border-purple-400"
             }`}
-            {...register("contact")}
+            {...register("contact", { 
+              required: "Contact is required",
+              pattern: {
+                value: /^[0-9]+$/i,
+                message: "Contact must only contain numbers"
+              }
+            })}
           />
           {errors.contact && (
             <p className="text-red-500 text-sm mt-2">
-              A valid contact is required.
+              {errors.contact?.message as React.ReactNode}
             </p>
           )}
         </div>
@@ -290,8 +314,13 @@ const SchoolForm = () => {
                 ? "text-red-300 border-red-400"
                 : "text-purple-200 border-purple-400"
             }`}
-            {...register("email")}
-          />
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: "Invalid email address"
+              }
+            })}          />
           {errors.email && (
             <p className="text-red-500 text-sm mt-2">
               A valid email is required.
